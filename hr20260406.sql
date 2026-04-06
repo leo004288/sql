@@ -32,6 +32,12 @@ SELECT    employee_id                    "사 번",  -- 사번 : alias, 별칭
           department_id                   부서
  FROM     employees
  WHERE    department_id = 50
- ORDER BY first_name ASC, last_name ASC;
+ --ORDER BY first_name ASC, last_name ASC;
+ ORDER BY first_name || '' || last_name ASC;
  
  -- 부서가 없는 직원 출력
+SELECT employee_id                       "사 번",
+       first_name || '' || last_name      ENAME,
+       department_id
+ FROM  employees
+ WHERE department_id IS NULL;    -- = NULL -> X / IS NULL, IS NOT NULL 사용
