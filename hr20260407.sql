@@ -207,7 +207,7 @@ FROM   employees;
 -- 04/07/26    - 월/일/년 미국식
 -- 07/04/26    - 일/월/년 영국식
 
-ALTER SESSION SET nls_date_format='YYYY-MM-DD HH24:MI:SS';                      --Q
+ALTER SESSION SET nls_date_format='YYYY-MM-DD HH24:MI:SS';                      
 
 SELECT sysdate      FROM DUAL;
 SELECT 7/2          FROM DUAL;
@@ -223,20 +223,20 @@ FROM DUAL;
 -- 날짜1 + 날짜2      : 오류
 
 -- 크리스마스 -day
--- SELECT to_date('26/12/25') - sysdate                                         --Q
+-- SELECT to_date('26/12/25') - sysdate                                        
 SELECT to_date('2026-12-25') - sysdate
  FROM DUAL;
 
 -- 소수이하 3자리로 반올림     : ROUND(VAL,3)
 -- 소수이하 3자리로 절사       : TRUNC(VAL,3)
--- 15일을 기준으로 반올림 날짜 : ROUND(sysdate,'month')                         --Q
+-- 15일을 기준으로 반올림 날짜 : ROUND(sysdate,'month')                         
 -- 해당 달의 첫번째 날짜       : TRUNC(sysdate,'month')
 -- 해당 달의 마지막 날짜       : last_day(sysdate)
 -- 다음 월요일                 : next_day(sysdate, '월요일')
 SELECT sysdate, ROUND(sysdate,'month'), TRUNC(sysdate,'month')  
  FROM DUAL;
 
-SELECT next_day(sysdate, '금요일') FROM dual;                                   --Q 
+SELECT next_day(sysdate, '금요일') FROM dual;                                   
 SELECT TRUNC(sysdate, 'month') FROM dual;
 SELECT last_day(sysdate) FROM dual;
 
@@ -254,7 +254,7 @@ SELECT *
 ALTER SESSION SET nls_date_format='YYYY-MM-DD HH24:MI:SS';
 SELECT *
  FROM  employees
- WHERE hire_date                                                                --Q
+ WHERE hire_date                                                                
   BETWEEN '2017/02/07 00:00:00'
   AND     '2017/02/07 23:59:59'
  ORDER BY employee_id;
@@ -322,6 +322,6 @@ SELECT *
  ORDER BY employee_id;
  
  ------------------------------------------------------------------------------
- -- 2025-07-09 10:05:04 오전 수요일 -> 한자로 출력
- SELECT sysdate
+ -- 2025년 07월 09일 10시 05시 04분 오전 수요일 -> 한자로 출력  年 月 日 時 分
+ SELECT TO_CHAR(SYSDATE, 'YYYY"年" MM"月" DD"日" HH24"時"')
  FROM dual;
