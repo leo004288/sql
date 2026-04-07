@@ -1,0 +1,60 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="JOBS" directorySegmentName="seg_0" id="2B05DFB8-BD88-998C-F852-D37B37915724">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 05:38:28 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+<schemaObject>C982EFA7-C017-B89D-542F-7CD7E225122B</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>90B83939-8958-F0C8-2944-A323C293F2F0</segment>
+<tableSpace>13AC6A2D-E031-1754-9924-5B38647D439B</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="MIN_SALARY" id="1527746D-BC62-3DE7-F33C-0D21C210A928">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 05:38:28 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="JOB_ID" id="86472125-2C06-06A7-0137-430DB812E9D3">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 05:38:28 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="MAX_SALARY" id="D4B0C9A8-BE81-A6FE-92CE-1F02F0E2C7C9">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 05:38:28 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="JOB_TITLE" id="D9678A38-5663-044C-B6B0-875EA2ED6CE4">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 05:38:28 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="JOB_ID_PK" id="66AA62FD-D1CD-0423-0E41-07D3E2E6284A">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 05:38:30 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+<schemaObject>C982EFA7-C017-B89D-542F-7CD7E225122B</schemaObject>
+<segment>05DF1C1B-C388-CBD8-B196-9086B31E5958</segment>
+<tableSpace>13AC6A2D-E031-1754-9924-5B38647D439B</tableSpace>
+</IndexProxy>
+</indexProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="JOB_ID_PK" id="5AD7A117-7DA0-E303-FF50-E4780C522A25">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 05:38:30 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+<segment>05DF1C1B-C388-CBD8-B196-9086B31E5958</segment>
+<tableSpace>13AC6A2D-E031-1754-9924-5B38647D439B</tableSpace>
+<existingIndex>66AA62FD-D1CD-0423-0E41-07D3E2E6284A</existingIndex>
+<indexSegment>05DF1C1B-C388-CBD8-B196-9086B31E5958</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev20c>
