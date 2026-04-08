@@ -299,29 +299,3 @@ SELECT employee_id,
  WHERE TO_CHAR(hire_date, 'DY') = '화'
  ORDER BY employee_id;
  
--- 입사후 일주일이내인 직원 명단
-ALTER SESSION SET nls_date_format='YYYY-MM-DD HH24:MI:SS';
-SELECT *
-FROM   employees
-WHERE  hire_date >= sysdate - 7
-ORDER BY employee_id;
-
--- 08월 입사자의 사번, 이름, 입사일순으로
-ALTER SESSION SET nls_date_format='YYYY-MM-DD HH24:MI:SS';
-SELECT   *
-FROM     employees
-WHERE TO_CHAR(hire_date, 'MM') = '08'   
-ORDER BY employee_id,
-         first_name || '' || last_name,
-         hire_date;
-
--- 부서번호 80이 아닌 직원
-SELECT *
- FROM  employees
- WHERE department_id != 80
- ORDER BY employee_id;
- 
- ------------------------------------------------------------------------------
- -- 2025년 07월 09일 10시 05시 04분 오전 수요일 -> 한자로 출력  年 月 日 時 分
- SELECT TO_CHAR(SYSDATE, 'YYYY"年" MM"月" DD"日" HH24"時"')
- FROM dual;
