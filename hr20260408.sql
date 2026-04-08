@@ -3,12 +3,14 @@ ALTER SESSION SET nls_date_format='RR/MM/DD';
 
 -- <앞으로 날짜 표현은 다음과 같이 표현>
 SELECT sysdate FROM dual;
-SELECT employee_id, TO_CHAR(hire_date, 'YYYY-MM-DD')
+SELECT employee_id,
+       TO_CHAR(hire_date, 'YYYY-MM-DD')
  FROM  employees
- WHERE TO_CHAR(hire_date, 'YYYY-MM-DD') = '2026-04-07';
+ WHERE TO_CHAR(hire_date, 'YYYY-MM-DD') = '2015-09-21';
 
 -- 입사후 일주일이내인 직원 명단
-SELECT employee_id, TO_CHAR(hire_date, 'YYYY-MM-DD')
+SELECT employee_id,
+       TO_CHAR(hire_date, 'YYYY-MM-DD')
 FROM   employees
 WHERE  hire_date >= sysdate - 7
 ORDER BY employee_id;
@@ -24,7 +26,7 @@ ORDER BY employee_id;
 -- 부서번호 80이 아닌 직원
 SELECT *
  FROM  employees
- WHERE department_id != 80  -- = <>,^=
+ WHERE department_id != 80  -- <>, ^=
  ORDER BY employee_id;
  
 -- +, -, *, /, MOD( , ) 
@@ -35,7 +37,7 @@ SELECT *
  --     年   月   日   時   分   秒 午前/午後 (月 化 水 木 今 土 日)
  
  -- 1) TO_CHAR
-SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS DAY DY AM')       날짜1,
+SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS DAY DY AM')                   날짜1,
        TO_CHAR(SYSDATE, 'YYYY"년"MM"월"DD"일" HH24"시"MI"분"SS"초" DAY AM')  날짜2,
        TO_CHAR(SYSDATE, 'YYYY"年"MM"月"DD"日" HH24"時"MI"分"SS"秒" DAY AM')  날짜3
  FROM  dual;
@@ -66,8 +68,8 @@ SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS DAY DY AM')       날짜1,
    ---- 사번, 부서번호 (단 부서번호가 NULL 이면 '부서없음')
    SELECT employee_id                                      사번,
    --     NVL(department_id, '부서없음')                   부서번호  -- 타입이 동일해야함 문자/숫자
-          DECODE(department_id, NULL, '부서없음',
-                                       department_id)      부서번호
+          DECODE(department_id, NULL, '부서없음'
+                                    ,  department_id)      부서번호
    FROM   employees
    ORDER BY employee_id;
    
@@ -122,7 +124,7 @@ SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS DAY DY AM')       날짜1,
     
  -- 3) CASE WHEN THEN END
  ---- 사번, 이름 ,부서명
- -- WHEN SCORE BETWEEN 99 AND 100 THEN 'A'
+ -- WHEN SCORE BETWEEN 90 AND 100 THEN 'A'
  -- WHEN 90 < = SCORE AND SCORE <=100 THEN 'A'
  SELECT employee_id                                   사번,
         first_name || '' || last_name                 이름,
@@ -161,7 +163,7 @@ SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS DAY DY AM')       날짜1,
             WHEN '목' THEN '木'
             WHEN '금' THEN '今'
             WHEN '토' THEN '土'
-            END                   || '요일',
+            END                   || '요일' ||
         DECODE( TO_CHAR(sysdate, 'AM'), '오전', '午前', '午後' )
  FROM   dual;
  
