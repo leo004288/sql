@@ -82,7 +82,7 @@ SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS DAY DY AM')                   날
    ---- DECODE로 사번, 이름, 부서명
 /*
 10	Administration
-0	Marketing 
+/*20	Marketing 
 30	Purchasing
 40	Human Resources
 50	Shipping
@@ -93,6 +93,7 @@ SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS DAY DY AM')                   날
 100	Finance
 110	Accounting
 */
+
    SELECT employee_id                                      사번,
           first_name || '' || last_name                    이름,
           DECODE(department_id, 10, 'Administration',

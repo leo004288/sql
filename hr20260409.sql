@@ -275,8 +275,8 @@ WHERE  d.department_name = 'IT';
 
 -- 부서명별 월급평균 (부서명 기준 월급평균 출력 / NULL은 '직원없음'으로 출력)
 SELECT   d.department_name                                                      부서명,
---       NVL(ROUND(AVG(salary),2),'0')                                          월급평균
---       NVL(ROUND(AVG(salary),2),'0')                                          월급평균
+--       NVL(ROUND(AVG(salary),2),0)                                            월급평균
+--      NVL2(ROUND(AVG(salary),2), ROUND(AVG(salary),2), 0)                     월급평균
          DECODE(ROUND(AVG(salary),2),NULL,'직원없음'
                                            ,ROUND(AVG(salary),2))               월급평균
 FROM     employees e 
@@ -343,14 +343,18 @@ FROM   employees e
 
 -- 직원명, 담당업무, 담당업무 히스토리
 SELECT   employee_id,
-         first_name || '' || last_name
-FROM     employees
+         first_name || '' || last_name,
+         job_id
+FROM     employees      e 
 UNION
-SELECT   employee_id,
-         first_name || '' || last_name
+SELECT   j.employee_id,
+         e.first_name || '' || e.last_name,
+         j.job_id
 FROM     job_history    j
-         JOIN employees e ON  
+         JOIN employees e ON j.employee_id = e.employee_id
 ORDER BY employee_id;
 
 -- 사번, 업무시작일, 업무종료일, 담당업무, 부서번호
+       
+       
        
