@@ -3,7 +3,7 @@
     SELECT *
     FROM   (
             SELECT employee_id                          사번,
-                   first_name || '' || last_name        이름,
+                   first_name || last_name              이름,
                    email      || '@green.com'           이메일,
                    phone_number                         전화
             FROM   employees
@@ -25,7 +25,7 @@
     WHERE   t.AVG_SAL >= 4000;
     
   -- 2) 일반적인 VIEW -> 영구저장된 객체
-  -- VIEW 생성 - 영구보관   /   OR REPLACE
+  -- VIEW 생성 - 영구보관   /   OR REPLACE                                      뷰 / 테이블
     CREATE OR REPLACE VIEW "HR"."VIEW_EMP" ("사번","이름","이메일","전화")
     AS 
             SELECT   employee_id                          사번,
@@ -87,7 +87,7 @@ CONNECT BY PRIOR e.employee_id = e.manager_id;
 /*
 직원등급
 월급           등급
-20000   초과   : S
+0000   초과   : S
 15001 ~ 20000  : A
 10001 ~ 15000  : B
 5001  ~ 10000  : C
@@ -145,10 +145,89 @@ ORDER BY employee_id;
   ORDER BY salary DESC NULLS LAST;   -- NULLS LAST : NULL을 제일 밑으로 / 기본값: NULL FIRST
 
   -- 1) old 문법 : ROWNUM - 의사(psuedo)칼럼
+  SELECT ROWNUM,
+         employee_id,
+         first_name || '' || last_name,
+         salary
+  FROM  employees
+  WHERE ROWNUM BETWEEN 1 AND 10
+  ORDER BY salary DESC NULLS LAST;
   
-  -- 2) new 문법 : ROW_NUMBER 
+  --
+  SELECT ROWNUM, employee_id, first_name, last_name, salary
+   FROM (  
+            SELECT   employee_id,
+                     first_name || '' || last_name,
+                     salary
+            FROM     employees
+            ORDER BY salary DESC NULLS LAST
+         );
+       
+  -- 2) new 문법 (ANSI) : ROW_NUMBER 
+  SELECT *
+  FROM (
+       SELECT   ROW_NUMBER() OVER (ORDER BY salary DESC NULLS LAST) rn,
+                employee_id,
+                first_name || '' || last_name,
+                salary
+       FROM     employees
+       ) t
+  WHERE t.rn BETWEEN 11 AND 20;
+  
+  -- 3) ORACLE 12C 부터는 OFFSET
+  SELECT   *
+  FROM     employees
+  ORDER BY salary DESC NULLS LAST
+  OFFSET   11 ROWS FETCH NEXT 10 ROWS ONLY;
 
 -- 2. RANK()       : 석차          (1,2,2,4,5,5,7,......)
+-- 월급순으로 석차 출력
+SELECT employee_id                                    사번,
+       first_name || '' || last_name                  이름, 
+       salary                                         월급,
+       RANK() OVER (ORDER BY salary DESC NULLS LAST)  석차    
+FROM   employees;
+
+-- 월급순으로 석차 출력 (1~11등)
+SELECT *
+FROM (
+    SELECT employee_id                                    사번,
+           first_name || '' || last_name                  이름, 
+           salary                                         월급,
+           RANK() OVER (ORDER BY salary DESC NULLS LAST)  석차    
+    FROM   employees    
+    ) t
+WHERE  t.석차 BETWEEN 1 AND 11;
+
 -- 3. DENSE_RANK() : 석차          (1.2.2.3.4.5.5.6,....)
--- 4. NTILE()      : 그룹으로 분류 
--- 5. LIST_AGG()   
+-- 월급순으로 석차 출력
+SELECT employee_id                                              사번,
+       first_name || '' || last_name                            이름, 
+       salary                                                   월급,
+       DENSE_RANK() OVER (ORDER BY salary DESC NULLS LAST)      석차    
+FROM   employees;
+
+-- 월급순으로 석차 출력 (1~11등)
+SELECT *
+FROM (
+    SELECT employee_id                                          사번,
+           first_name || '' || last_name                        이름, 
+           salary                                               월급,
+           DENSE_RANK() OVER (ORDER BY salary DESC NULLS LAST)  석차    
+    FROM   employees    
+    ) t
+WHERE  t.석차 BETWEEN 1 AND 11;
+
+-- 4. NTILE()      : 그룹으로 분류
+
+-- 5. LIST_AGG()     
+-- LISTAGG 여러줄을 한줄짜리 문자열로 변경
+SELECT department_id FROM employees;
+
+SELECT DISTINCT department_id FROM employees;
+
+SELECT LISTAGG(DISTINCT department_id) FROM   employees;
+
+SELECT LISTAGG(DISTINCT department_id, ',')
+ WITHIN GROUP(ORDER BY department_id DESC)
+FROM   employees;
