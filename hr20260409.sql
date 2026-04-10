@@ -359,14 +359,14 @@ FROM   ( SELECT  employee_id,
                  job_id
          FROM    employees 
          UNION
-         SELECT   employee_id,
+         SELECT  employee_id,
                  job_id
          FROM    job_history    
                  ) -- INLINE VIEW : ORDER BY 사용가능 : FROM 뒤에 사용
 ORDER BY employee_id;
 
 -- 사번, 업무시작일, 업무종료일, 담당업무, 부서번호
---SLEECT 사번, 업무시작일, 업무종료일, 담당업무, 부서번호
+--SELECT 사번, 업무시작일, 업무종료일, 담당업무, 부서번호
 --FROM  
 --(
 SELECT employee_id                                       사번,
@@ -386,3 +386,21 @@ FROM   job_history
 ORDER BY 사번, 업무시작일;
        
 -- 사번, 직원명, 업무시작일, 엄무종료일, 담당업무명, 부서이름
+SELECT e.employee_id                                         사번,
+       e.first_name || '' || last_name                       직원명,
+       e.hire_date                                           업무시작일,
+       '제직중'                                              업무종료일,
+       j.job_title                                           담당업무명,
+       d.department_name                                     부서이름
+FROM   employees        e
+       JOIN departments d ON e.department_id = d.department_id
+       JOIN jobs        j ON e.job_id        = j.job_id
+UNION
+SELECT h.employee_id                                         사번,
+       first_name || '' || last_name                       직원명,
+       h.start_date                                          업무시작일,
+       h.end_date                                            업무종료일,
+       job_title                                           담당업무명,
+       department_name                                     부서이름
+FROM   job_history h
+       JOIN employees e ON h.employee_id = e.employee_id
