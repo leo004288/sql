@@ -129,7 +129,7 @@ COMMIT;
 
 SELECT e.employee_id                            직원번호,
        e.first_name || '' || e.last_name        직원명,
-       e.salary                                 월급,
+       NVL(TO_CHAR(e.salary), '미정')           월급,
        NVL(sg.grade, '등급없음')                등급
 FROM   employees e
        LEFT JOIN salgrade sg ON e.salary BETWEEN sg.losal AND sg.hisal
