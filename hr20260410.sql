@@ -218,7 +218,7 @@ FROM (
     ) t
 WHERE  t.석차 BETWEEN 1 AND 11;
 
--- 4. NTILE()      : 그룹으로 분류
+-- 4. NTILE() : 그룹으로 분류
 
 -- 5. LIST_AGG()     
 -- LISTAGG 여러줄을 한줄짜리 문자열로 변경
