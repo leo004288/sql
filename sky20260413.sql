@@ -63,7 +63,7 @@ win+r : cmd
 -- hr의 employees TABLE 을 복사해서 sky
 -- 1. 테이블 생성
   -- 1) 테이블 복사 
-  대상 : 테이블 구조, 데이터 (제약 조건의 일부만 복사(NOT NULL))
+  -- 대상 : 테이블 구조, 데이터 (제약 조건의 일부만 복사(NOT NULL))
   
   -- {1} 구조, 데이터 다 복사, 제약조건은 일부만 복사(NULL 관련)
   CREATE TABLE EMP1
