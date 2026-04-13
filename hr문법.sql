@@ -62,9 +62,9 @@ SELECT LTRIM('ABCDEFGABC', 'ABC'),
        RTRIM('ABCDEFGABC', 'ABC'),
        RTRIM('가나다라', '라'),
        TRIM('         ABCDEFGABC         '),
-       LENGTH( TRIM('         ABCDEFGABC         ') ),
-       TRIM( LEADING ' ' 'FROM' ' ABCDE ' ),
-       LENGTHTRIM( LEADING ' ' 'FROM' ' ABCDE ' )
+       LENGTH( TRIM('         ABCDEFGABC         ') )
+--       TRIM( LEADING ' ' 'FROM' ' ABCDE ' ),
+--       LENGTHTRIM( LEADING ' ' 'FROM' ' ABCDE ' )
 FROM DUAL;
 
 -- INSTR(str, substr, pos, occur) 
