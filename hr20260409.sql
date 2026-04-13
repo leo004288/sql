@@ -383,10 +383,9 @@ SELECT employee_id                                       사번,
        department_id                                     부서번호 
 FROM   job_history
 --)
-<<<<<<< HEAD
 ORDER BY 사번, 업무시작일;
        
--- 사번, 직원명, 업무시작일, 엄무종료일, 담당업무명, 부서이름
+-- 1. 사번, 직원명, 업무시작일, 엄무종료일, 담당업무명, 부서이름 --> X, 데이터 타입 동일하게
 SELECT e.employee_id                                         사번,
        e.first_name || '' || last_name                       직원명,
        e.hire_date                                           업무시작일,
@@ -408,7 +407,7 @@ FROM   job_history      h
        JOIN departments d ON h.department_id = d.department_id
        JOIN jobs        j ON h.job_id        = j.job_id;
        
---                   ///////////////////////////////   
+-- 2.  사번, 직원명, 업무시작일, 엄무종료일, 담당업무명, 부서이름 
 
 SELECT e.employee_id                                         사번,
        e.first_name || '' || last_name                       직원명,
@@ -429,7 +428,6 @@ SELECT h.employee_id                                         사번,
 FROM   job_history      h
        JOIN employees   e ON h.employee_id   = e.employee_id
        JOIN departments d ON h.department_id = d.department_id
-       JOIN jobs        j ON h.job_id        = j.job_id;       
-=======
+       JOIN jobs        j ON h.job_id        = j.job_id     
 ORDER BY 사번, 업무시작일;
->>>>>>> e4f51e5edfd8b1dcdc93dad31896b3906a7c3840
+

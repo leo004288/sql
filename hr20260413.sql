@@ -33,7 +33,7 @@ END;
 -- 저장 프로시저 (IN : INPUT, OUT : OUTPUT, INOUT : INPUTOUT)
 -- 파라미터는 in_empid IN NUMBER 괄호와 숫자사용 X
 -- 내부변수는 v_name 반드시 괄호와 숫자사용
-CREATE PROCEDURE get_empsal ( in_empid IN NUMBER )
+CREATE OR REPLACE PROCEDURE get_empsal ( in_empid IN NUMBER )
 IS
 v_name VARCHAR2(46);
 v_sal  NUMBER(8, 2);
@@ -45,6 +45,7 @@ v_sal  NUMBER(8, 2);
         
     DBMS_OUTPUT.put_line('이름:' || v_name);
     DBMS_OUTPUT.put_line('월급:' || v_sal);
+    
     END;
 /
 
@@ -52,6 +53,18 @@ SET SERVEROUTPUT ON;  -- DBMS_OUTPUT.put_line() 의 결과를 출력
 CALL get_empsal(107);
 
 -- 부서번호입력, 해당부서의 최고월급자의 이름, 월급 출력 -----------------------
+-- 90번 부서의 최고월급자의 이름, 월급 출력
+/*
+SELECT first_name || last_name,
+       salary
+FROM   employees
+WHERE  salary = (
+            SELECT MAX(salary)
+            FROM   employees
+            WHERE  department_id = 90
+            );
+*/
+
 CREATE OR REPLACE PROCEDURE get_name_maxsal (
     in_deptid IN  NUMBER,
     o_name    OUT VARCHAR2,
@@ -60,15 +73,16 @@ CREATE OR REPLACE PROCEDURE get_name_maxsal (
 IS
     v_maxsal number(8,2);
     BEGIN
-        SELECT MAX(salary)
-         INTO  v_maxsal
-        FROM  employees
-        WHERE department_id = in_deptid;
         
         SELECT first_name || last_name, salary
          INTO  o_name                 , o_sal
         FROM   employees
-        WHERE  salary        = v_maxsal
+        WHERE  salary = ( 
+                        SELECT MAX(salary)
+                         --INTO  v_maxsal
+                        FROM  employees
+                        WHERE department_id = in_deptid
+                        )
          AND   department_id = in_deptid;
          
          DBMS_OUTPUT.put_line(o_name);
@@ -83,6 +97,9 @@ VAR o_sal  NUMBER;
 CALL get_name_maxsal(90, :o_name, :o_sal);
 PRINT o_name;
 PRINT o_sal;
+
+SET SERVEROUTPUT ON;  -- DBMS_OUTPUT.put_line() 의 결과를 출력
+CALL get_name_maxsal(90, :o_name, :o_sal);
 
 -- 90번 부서번호입력, 직원들 출력 : 결과가 여러줄 ------------------------------
 CREATE OR REPLACE PROCEDURE getemplist(
@@ -107,7 +124,7 @@ IS
 SET SERVEROUTPUT ON;
 EXECUTE getemplist(90);
 
--- *SELECT INTO는 결과가 한줄일때만 사용*
+-- *SELECT INTO는 결과가 한줄일때만 사용* --------------------------------------
 -- CURSOR 사용
 CREATE OR REPLACE PROCEDURE get_emplist(
     in_deptid IN  NUMBER,
