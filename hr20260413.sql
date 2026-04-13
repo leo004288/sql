@@ -93,6 +93,47 @@ FROM   employees
 GROUP BY department_id;
 
 
+-- 90번 부서번호입력, 직원들 출력 : 결과가 여러줄 ------------------------------
+CREATE OR REPLACE PROCEDURE getemplist(
+    in_deptid NUMBER
+)
+IS 
+    v_empid NUMBER(6);
+    v_name  VARCHAR2(50);
+    v_phone VARCHAR2(25);
+    BEGIN
+        SELECT employee_id, first_name || last_name, phone_number
+         INTO  v_empid    , v_name                 , v_phone
+        FROM   employees
+        WHERE  department_id = in_deptid;
+          
+        DBMS_OUTPUT.put_line(v_empid);  
+        
+    END;
+/
 
--- 90번 부서번호입력, 직원들 출력
-SELECT 
+-- 테스트 err
+SET SERVEROUTPUT ON;
+EXECUTE getemplist(90);
+
+-- *SELECT INTO는 결과가 한줄일때만 사용*
+-- CURSOR 사용
+CREATE OR REPLACE PROCEDURE get_emplist(
+    in_deptid IN  NUMBER,
+    o_cur     OUT SYS_REFCURSOR
+)
+IS 
+    BEGIN
+    
+        OPEN o_cur FOR
+            SELECT employee_id, first_name || last_name, phone_number
+            FROM   employees
+            WHERE  department_id = in_deptid;
+          
+    END;
+/
+
+-- 테스트
+VARIABLE o_cur REFCURSOR; 
+EXECUTE get_emplist(50, :o_cur);
+PRINT o_cur;
