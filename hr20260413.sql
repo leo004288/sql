@@ -39,7 +39,7 @@ v_name VARCHAR2(46);
 v_sal  NUMBER(8, 2);
     BEGIN
         SELECT first_name || last_name, salary
-        INTO  v_name                 , v_sal
+         INTO  v_name                 , v_sal
         FROM   employees
         WHERE  employee_id = 107;
         
@@ -83,15 +83,6 @@ VAR o_sal  NUMBER;
 CALL get_name_maxsal(90, :o_name, :o_sal);
 PRINT o_name;
 PRINT o_sal;
-
-
-
-SELECT department_id,
-       first_name || last_name,
-       MAX(salary)
-FROM   employees
-GROUP BY department_id;
-
 
 -- 90번 부서번호입력, 직원들 출력 : 결과가 여러줄 ------------------------------
 CREATE OR REPLACE PROCEDURE getemplist(
