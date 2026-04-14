@@ -61,7 +61,7 @@ win+r : cmd
 --------------------------------------------------------------------------------
 -- ORACLE TABLE 복사
 -- hr의 employees TABLE 을 복사해서 sky
--- 1. 테이블 생성
+-- 1. 테이블 생성 CREATE
   -- 1) 테이블 복사 
   -- 대상 : 테이블 구조, 데이터 (제약 조건의 일부만 복사(NOT NULL))
   
@@ -104,5 +104,114 @@ win+r : cmd
            manager_id                       mgr,
            department_id                    deptid
     FROM HR.employees;
+
+--------------------------------------------------------------------------------
+SELECT * FROM TAB;
+--------------------------------------------------------------------------------
+-- SQL DEVELOPER 메뉴에서 TABLE 생성
+-- sky 계정 
+  -- 테이블 메뉴클릭 -> 새 테이블 -> TABLE1 생성: EMP6
+/*
+CREATE TABLE EMP6 
+    EMPID   NUMBER(8,2)  NOT NULL PRIMARY KEY,
+    ENAME   VARCHAR2(46) NOT NULL,
+    TEL     VARCHAR2(20), 
+    EMAIL   VARCHAR2(320)      
+*/
+
+DROP TABLE EMP6;
+
+-- SCRIPT로 생성
+CREATE TABLE EMP7 
+(
+  EMPID NUMBER(8,2)  NOT NULL 
+, ENAME VARCHAR2(46) NOT NULL
+, TEL   VARCHAR2(20)  
+, EMAIL VARCHAR2(320)  
+, CONSTRAINT EMP7_PK PRIMARY KEY 
+  (
+    EMPID 
+  )
+  ENABLE 
+);
+
+--------------------------------------------------------------------------------
+-- 테이블 제거 - 영구적으로 구조와 데이터가 제거된다
+-- DROP 되는 테이블이 부모테이블일 경우 자식을 먼저 지워야 제거 가능
+-- 1. DROP TABLE EMP1;
+DROP TABLE EMP1;
+
+-- 2. DROP TABLE employees CASCADE; -- 부모자식관계의 데이터를 전체삭제 
+CREATE TABLE EMP1
+AS 
+    SELECT * FROM employees;
     
+DROP TABLE EMP1;
+DROP TABLE employees; -- 삭제 X
+-- 부모키를 가진 부모테이블은 자식테이블에 데이터가 있다면 테이블이 삭제되지 않는다
+ 
+DROP TABLE employees CASCADE; -- 부모자식관계의 데이터를 전체삭제
+
+--------------------------------------------------------------------------------
+-- 구조변경 (ALTER)
+  -- 1. 칼럼추가
+    ALTER TABLE EMP5
+     ADD (LOC VARCHAR2(6)); -- 추가된 칼럼은 NULL로 채워짐
+     
+  -- 2. 칼럼제거
+    ALTER TABLE EMP5
+     DROP COLUMN LOC;
+     
+  -- 3. 테이블 이름 변경 
+    RENAME EMP5 TO NEWEMP5;  -- 오라클 전용명령
   
+  -- 4. 칼럼속성변경 - 데이터칸의 크기를 늘리거나 줄인다
+  -- 크기를 줄일때 데이터의 내용이 짤릴수있다
+    ALTER TABLE EMP5
+     MODIFY ( ENAME VARCHAR2(60) ); -- 46 -> 60
+     
+--------------------------------------------------------------------------------
+-- TABLE 생성하고 데이터를 파일에서 가져옴
+CREATE TABLE ZIPCODE
+(
+ ZIPCODE VARCHAR2(7)           -- 우편번호
+,SIDO    VARCHAR2(6)           -- 시도
+,GUGUN   VARCHAR2(26)          -- 구군
+,DONG    VARCHAR2(78)          -- 읍명동리건물명
+,BUNJI   VARCHAR2(26)          -- 번지
+,SEQ     NUMBER(5) PRIMARY KEY -- 일련번호
+);
+
+-- 테이블 생성후 ZIPCODE 테이블 선택하고 
+    -- -> 우클릭으로 데이터 임포트
+        -- -> ZIPCODE_UTF8.CSV 선택
+        
+SELECT * FROM ZIPCODE;
+SELECT COUNT(*) FROM ZIPCODE;
+
+-- 부산 개수
+SELECT COUNT(*)
+FROM ZIPCODE
+WHERE SIDO = '부산';
+
+-- 시도별 우편번호 개수
+SELECT   sido                  시도,      
+         COUNT(zipcode)        우편번호개수
+FROM     zipcode
+GROUP BY sido;
+
+-- 우편번호 중복제거 개수
+SELECT COUNT(zipcode),
+       COUNT(DISTINCT zipcode) 
+FROM   zipcode;
+
+-- 부전2동포함 출력
+SELECT '['    || zipcode || '] ' ||
+        sido  || ' ' ||
+        gugun || ' ' ||
+        dong  || ' ' ||
+        bunji || ' ' AS address
+
+FROM zipcode
+WHERE dong LIKE '%부전2동%'
+ORDER BY SEQ;
