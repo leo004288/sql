@@ -25,7 +25,7 @@
     WHERE   t.AVG_SAL >= 4000;
     
   -- 2) 일반적인 VIEW -> 영구저장된 객체
-  -- VIEW 생성 - 영구보관   /   OR REPLACE                                      뷰 / 테이블
+  -- VIEW 생성 - 영구보관   /   OR REPLACE                                      
     CREATE OR REPLACE VIEW "HR"."VIEW_EMP" ("사번","이름","이메일","전화")
     AS 
             SELECT   employee_id                          사번,
