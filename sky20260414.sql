@@ -210,23 +210,17 @@ SELECT st.stid                                           학번,
        NVL( TO_CHAR( SUM(score) ), '미응시')             총점,
        NVL( TO_CHAR( ROUND( AVG(score),2 ) ), '미응시')  평균,
        NVL( CASE
-        WHEN score BETWEEN 89.9 AND 1000 THEN 'A'
-        WHEN score BETWEEN 79.9 AND 90 THEN 'B'
-        WHEN score BETWEEN 69.9 AND 80 THEN 'C'
-        WHEN score BETWEEN 59.9 AND 70 THEN 'D'
-        WHEN score < 60 THEN 'F'
+        WHEN AVG(score) >= 90 THEN 'A'
+        WHEN AVG(score) >= 80 THEN 'B'
+        WHEN AVG(score) >= 70 THEN 'C'
+        WHEN AVG(score) >= 60 THEN 'D'
+        WHEN AVG(score) <  60 THEN 'F'
        END, '미응시' )                                   등급,
        RANK() OVER (ORDER BY AVG(score) DESC NULLS LAST) 석차
 FROM   scores sc 
        right JOIN student st ON st.stid = sc.stid
-GROUP BY st.stid, st.stname, CASE
-                                 WHEN score BETWEEN 89.9 AND 1000 THEN 'A'
-                                 WHEN score BETWEEN 79.9 AND 90 THEN   'B'
-                                 WHEN score BETWEEN 69.9 AND 80 THEN   'C'
-                                 WHEN score BETWEEN 59.9 AND 70 THEN   'D'
-                                 WHEN score < 60 THEN 'F'
-                             END
-ORDER BY 학번;
+GROUP BY st.stid, st.stname 
+ORDER BY 석차;
 
 
 /*
