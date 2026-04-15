@@ -22,7 +22,7 @@
   4. CHECK           : 값의 범위지정 , DOMAIN 제약 조건 
   5. FOREIGN KEY     : 외래키 제약조건
 */  
-----------------------------
+----------------------------------
 CREATE TABLE STUDENT
 (
   STID   NUMBER(6)    PRIMARY KEY       -- 학번 숫자(6) 기본키(PK)
@@ -66,7 +66,7 @@ COMMIT;
  
 SELECT * FROM STUDENT;
 
--------------------
+---------------------------------
 CREATE TABLE SCORES
 (
   SCID    NUMBER(7)    NOT NULL                               -- 일련번호 숫자(7) 기본키, 번호자동증가
@@ -94,6 +94,10 @@ INSERT INTO SCORES VALUES (8,     '수학',   85,    4);
 
 INSERT INTO SCORES VALUES (9,     '국어',  805,   5); -- err 점수오류
 INSERT INTO SCORES VALUES (10,    '영어',  100,   8); -- err 8번 없음
+
+COMMIT;
+
+SELECT * FROM SCORES;
 
 --------------------------------------------------------------------------------
 -- DML 추가, 수정 ,삭제
@@ -143,7 +147,6 @@ SELECT * FROM SCORES;
 -- 2. TRUNCATE TABLE SCORES;  -- 구조남기고, DATA 만 삭제, 속도 빠름 
 -- 3. DELETE TABLE SCORES;    -- 구조남기고, DATA 만 삭제, 속도 느림
 
-
 -- SET TIMING ON
 SELECT * FROM SCORES;
 DELETE FROM SCORES;
@@ -170,26 +173,41 @@ DELETE FROM scores
 DELETE FROM STUDENT
  WHERE STID = 1;
  
+-- 1. 자식먼저 삭제
 DROP TABLE SCORES;
 DROP TABLE STUDENT;
 
+-- 2. 순서와 무관하게 삭제
+DROP TABLE STUDENT CASCADE CONSTRAINTS PURGE; 
+DROP TABLE SCORES; 
+
 --------------------------------------------------------------------------------
 -- 조회
+SELECT * FROM scores;
+SELECT * FROM student;
+
 -- 학번, 이름, 점수(국어)
 SELECT st.stid               학번,
        st.stname             이름,
        sc.score              국어
+FROM   student st, scores sc 
+WHERE  st.stid = sc.stid(+)
+ORDER BY st.stid;
+
+SELECT st.stid               학번,
+       st.stname             이름,
+       sc.score              국어
 FROM   student st 
-       JOIN scores sc ON st.stid = sc.stid
+       LEFT JOIN scores sc ON st.stid = sc.stid
 WHERE  subject = '국어';
 
 -- 학번, 이름, 총점, 평균
-SELECT st.stid     학번,
-       st.stname   이름,
-       SUM(score)  총점,
-       ROUND(AVG(score),2)  평균
+SELECT st.stid                 학번,
+       st.stname               이름,
+       SUM(sc.score)           총점,
+       ROUND(AVG(sc.score),2)  평균
 FROM   scores sc 
-       JOIN student st ON st.stid = sc.stid
+       RIGHT JOIN student st ON st.stid = sc.stid
 GROUP BY st.stid, st.stname
 ORDER BY st.stid;
 
@@ -199,10 +217,36 @@ SELECT st.stid                                           학번,
        NVL( TO_CHAR( SUM(score) ), '미응시')             총점,
        NVL( TO_CHAR( ROUND( AVG(score),2 ) ), '미응시')  평균
 FROM   scores sc 
-       right JOIN student st ON st.stid = sc.stid
+       RIGHT JOIN student st ON st.stid = sc.stid
 GROUP BY st.stid, st.stname
 ORDER BY st.stid;
-    
+
+SELECT st.stid                                                 학번,
+       st.stname                                               이름,
+       DECODE( SUM(sc.score), NULL, '미응시', SUM(sc.score))   총점,
+       CASE
+        WHEN ROUND( AVG(sc.score), 2) IS NULL THEN '미응시'
+        ELSE                                     TO_CHAR( AVG(sc.score), '999.00' )             
+       END                                                     평균
+FROM   scores sc 
+       RIGHT JOIN student st ON st.stid = sc.stid
+GROUP BY st.stid, st.stname
+ORDER BY st.stid;
+
+SELECT 학번, 이름,
+       DECODE(총점, NULL, '미응시', TO_CHAR( SUM(sc.score), '999.00' ) )
+       DECODE(총점, NULL, '미응시', TO_CHAR( AVG(sc.score), '999.00' ) )
+FROM (
+SELECT st.stid                 학번,
+       st.stname               이름,
+       SUM(sc.score)           총점,
+       ROUND(AVG(sc.score),2)  평균
+FROM   scores sc 
+       RIGHT JOIN student st ON st.stid = sc.stid
+GROUP BY st.stid, st.stname
+ORDER BY st.stid
+);
+
 -- 모든학생의 학번, 이름, 총점, 평균, 등급, 석차
 
 SELECT st.stid                                           학번,
@@ -210,31 +254,16 @@ SELECT st.stid                                           학번,
        NVL( TO_CHAR( SUM(score) ), '미응시')             총점,
        NVL( TO_CHAR( ROUND( AVG(score),2 ) ), '미응시')  평균,
        NVL( CASE
-        WHEN AVG(score) >= 90 THEN 'A'
-        WHEN AVG(score) >= 80 THEN 'B'
-        WHEN AVG(score) >= 70 THEN 'C'
-        WHEN AVG(score) >= 60 THEN 'D'
-        WHEN AVG(score) <  60 THEN 'F'
-       END, '미응시' )                                   등급,
+             WHEN AVG(score) >= 90 THEN 'A'
+             WHEN AVG(score) >= 80 THEN 'B'
+             WHEN AVG(score) >= 70 THEN 'C'
+             WHEN AVG(score) >= 60 THEN 'D'
+             WHEN AVG(score) <  60 THEN 'F'
+            END, '미응시' )                                   등급,
        RANK() OVER (ORDER BY AVG(score) DESC NULLS LAST) 석차
 FROM   scores sc 
        right JOIN student st ON st.stid = sc.stid
 GROUP BY st.stid, st.stname 
 ORDER BY 석차;
-
-
-/*
-SELECT st.stid                                           학번,
-       st.stname                                         이름,
-       NVL( TO_CHAR( SUM(score) ), '미응시')             총점,
-       NVL( TO_CHAR( ROUND( AVG(score),2 ) ), '미응시')  평균,
-       LEVEL
-FROM   scores sc 
-       right JOIN student st ON st.stid = sc.stid
-START WITH st.stid
-CONNECT BY PRIOR st.stid = sc.stid
-GROUP BY st.stid, st.stname
-ORDER BY st.stid;
-*/
 
 -- 학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차
