@@ -338,11 +338,27 @@ CREATE TABLE SCOREGRADE
 (
     GRADE   VARCHAR2(1) PRIMARY KEY,
     LOSCORE NUMBER(6,2),
-    HUSCORE NUMBER(6,2)
+    HISCORE NUMBER(6,2)
 );
+-- DROP TABLE SCOREGRADE;
 
-INSERT INTO SCOREGRAGE VALUE ('A', 90, 1)
+INSERT INTO SCOREGRADE VALUES ('A', 90,   100);
+INSERT INTO SCOREGRADE VALUES ('B', 80, 89.99);
+INSERT INTO SCOREGRADE VALUES ('C', 70, 79.99);
+INSERT INTO SCOREGRADE VALUES ('D', 60, 69.99);
+INSERT INTO SCOREGRADE VALUES ('F', 0 ,  59.99);
+COMMIT;
 
+SELECT t.학번, t.이름,
+       DECODE( t.국어, NULL, '미응시', t.국어)           국어,
+       DECODE( t.영어, NULL, '미응시', t.영어)           영어,
+       DECODE( t.수학, NULL, '미응시', t.수학)           수학,
+       DECODE( t.총점, NULL, '미응시', t.총점)           총점,
+       DECODE( t.평균, NULL, '미응시', t.평균)           평균,
+       DECODE( sg.grade, NULL, '미응시', sg.grade)       등급,
+       RANK() OVER(ORDER BY t.총점 DESC NULLS LAST)      석차
+FROM 
+(
 SELECT   st.stid                                     학번,
          st.stname                                   이름,
          SUM( DECODE(sc.subject, '국어', sc.score) ) 국어,
@@ -353,7 +369,39 @@ SELECT   st.stid                                     학번,
 FROM     scores sc
          RIGHT JOIN STUDENT st ON sc.stid = st.stid
 GROUP BY st.stid, st.stname
-ORDER BY 학번;
+ORDER BY 학번
+) t LEFT JOIN SCOREGRADE sg ON t.평균 BETWEEN sg.loscore AND sg.hiscore; 
 
+-- 2. ORACLE 11G 방식 - PIVOT 명령 사용 : 통계를 생성 / 집계함수와 같이 사용
+-- 1) 학번, 국어, 영어, 수학
+SELECT * FROM (
+    SELECT stid, subject, score
+    FROM   scores
+)
+PIVOT
+(
+    SUM(SCORE)
+        FOR subject
+            IN('국어' AS 국어, '영어' AS 영어, '수학' AS 수학)
+);
 
--- 2. ORACLE 11G 방식 - PIVOT
+-- 1) 학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차
+SELECT st.stid 학번, st.stname 이름, t.국어, t.영어, t.수학, 
+       NVL(t.국어,0) + NVL(t.영어,0) + NVL(t.수학,0)                                        총점, 
+       ROUND( (NVL(t.국어,0) + NVL(t.영어,0) + NVL(t.수학,0))/3, 2)                         평균, 
+       sg.grade                                                                             등급, 
+       RANK() OVER( ORDER BY NVL(t.국어,0) + NVL(t.영어,0) + NVL(t.수학,0) DESC NULLS LAST) 석차
+FROM (
+    SELECT * FROM (
+        SELECT stid, subject, score
+        FROM   scores
+    )   
+    PIVOT
+    (
+        SUM(SCORE)
+            FOR subject
+                IN('국어' AS 국어, '영어' AS 영어, '수학' AS 수학)
+    )
+) t RIGHT JOIN student    st ON t.stid = st.stid
+    LEFT  JOIN SCOREGRADE sg ON (NVL(t.국어,0) + NVL(t.영어,0) + NVL(t.수학,0))/3
+                             BETWEEN sg.loscore AND sg.hiscore;
