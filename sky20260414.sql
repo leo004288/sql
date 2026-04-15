@@ -234,9 +234,10 @@ GROUP BY st.stid, st.stname
 ORDER BY st.stid;
 
 SELECT 학번, 이름,
-       DECODE(총점, NULL, '미응시', TO_CHAR( SUM(sc.score), '999.00' ) )
+       DECODE(총점, NULL, '미응시', TO_CHAR( SUM(sc.score), '999.00' ) ),
        DECODE(총점, NULL, '미응시', TO_CHAR( AVG(sc.score), '999.00' ) )
-FROM (
+FROM 
+(
 SELECT st.stid                 학번,
        st.stname               이름,
        SUM(sc.score)           총점,
@@ -260,10 +261,99 @@ SELECT st.stid                                           학번,
              WHEN AVG(score) >= 60 THEN 'D'
              WHEN AVG(score) <  60 THEN 'F'
             END, '미응시' )                                   등급,
-       RANK() OVER (ORDER BY AVG(score) DESC NULLS LAST) 석차
-FROM   scores sc 
+       RANK() OVER (ORDER BY AVG(score) DESC NULLS LAST)      석차
+FROM   scores sc  
        right JOIN student st ON st.stid = sc.stid
 GROUP BY st.stid, st.stname 
 ORDER BY 석차;
 
+SELECT st.stid                                                         학번,
+       st.stname                                                       이름,
+       CASE 
+        WHEN SUM(sc.score) IS NULL THEN '미응시'
+        ELSE                             TO_CHAR(SUM(sc.score), '999.99')
+       END                                                             총점,
+       CASE 
+        WHEN AVG(sc.score) IS NULL THEN '미응시'
+        ELSE                             TO_CHAR(AVG(sc.score), '999.00')
+       END                                                             평균,
+       CASE 
+        WHEN ROUND( AVG(sc.score), '2' ) BETWEEN 90 AND 100   THEN 'A'
+        WHEN ROUND( AVG(sc.score), '2' ) BETWEEN 80 AND 89.99 THEN 'B'
+        WHEN ROUND( AVG(sc.score), '2' ) BETWEEN 70 AND 79.99 THEN 'C'
+        WHEN ROUND( AVG(sc.score), '2' ) BETWEEN 60 AND 69.99 THEN 'D'
+        ELSE                                                       'F'
+       END                                                             등급,
+       RANK() OVER (ORDER BY SUM(SC.SCORE) DESC NULLS LAST)            석차
+FROM   student st
+       LEFT JOIN scores sc  ON st.stid = sc.stid
+GROUP BY st.stid, st.stname;
+
+--------------------------------------------------------------------------------
 -- 학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차
+-- 1. ORACLE 10G 방식
+-- 1) 학번, 국어, 영어, 수학
+SELECT sc.stid                                    학번,
+       DECODE(sc.subject, '국어', sc.score)       국어,
+       DECODE(sc.subject, '영어', sc.score)       영어,
+       DECODE(sc.subject, '수학', sc.score)       수학
+FROM   scores sc;
+
+-- 2) 학번, 국어, 영어, 수학 : JOIN 추가
+SELECT   sc.stid                                     학번,
+         SUM( DECODE(sc.subject, '국어', sc.score) ) 국어,
+         SUM( DECODE(sc.subject, '영어', sc.score) ) 영어,
+         SUM( DECODE(sc.subject, '수학', sc.score) ) 수학
+FROM     scores sc
+GROUP BY sc.stid;
+
+-- 3) 학번, 이름, 국어, 영어, 수학 : JOIN 추가
+SELECT   st.stid                                     학번,
+         st.stname                                   이름,
+         SUM( DECODE(sc.subject, '국어', sc.score) ) 국어,
+         SUM( DECODE(sc.subject, '영어', sc.score) ) 영어,
+         SUM( DECODE(sc.subject, '수학', sc.score) ) 수학
+FROM     scores sc
+         RIGHT JOIN STUDENT st ON sc.stid = st.stid
+GROUP BY st.stid, st.stname
+ORDER BY 학번;
+
+-- 4) 학번, 이름, 국어, 영어, 수학, 총점, 평균
+SELECT   st.stid                                     학번,
+         st.stname                                   이름,
+         SUM( DECODE(sc.subject, '국어', sc.score) ) 국어,
+         SUM( DECODE(sc.subject, '영어', sc.score) ) 영어,
+         SUM( DECODE(sc.subject, '수학', sc.score) ) 수학, 
+         SUM(sc.score)                               총점,
+         ROUND( AVG(sc.score), 2 )                   평균
+FROM     scores sc
+         RIGHT JOIN STUDENT st ON sc.stid = st.stid
+GROUP BY st.stid, st.stname
+ORDER BY 학번;
+
+-- 5) 학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차 
+-- NULL은 '미응시'로 출력
+-- 등급 : 비등가 조인
+CREATE TABLE SCOREGRADE
+(
+    GRADE   VARCHAR2(1) PRIMARY KEY,
+    LOSCORE NUMBER(6,2),
+    HUSCORE NUMBER(6,2)
+);
+
+INSERT INTO SCOREGRAGE VALUE ('A', 90, 1)
+
+SELECT   st.stid                                     학번,
+         st.stname                                   이름,
+         SUM( DECODE(sc.subject, '국어', sc.score) ) 국어,
+         SUM( DECODE(sc.subject, '영어', sc.score) ) 영어,
+         SUM( DECODE(sc.subject, '수학', sc.score) ) 수학, 
+         SUM(sc.score)                               총점,
+         ROUND( AVG(sc.score), 2 )                   평균
+FROM     scores sc
+         RIGHT JOIN STUDENT st ON sc.stid = st.stid
+GROUP BY st.stid, st.stname
+ORDER BY 학번;
+
+
+-- 2. ORACLE 11G 방식 - PIVOT
