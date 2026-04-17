@@ -26,11 +26,10 @@ SELECT * FROM TUSER
 WHERE  userid = 'sky1';
 
 UPDATE tuser
-SET    userid   = ?,
-       username = ?,
-       email    = ?
-WHERE userid = ?;
+SET    username = '스카이1',
+       email    = 'sky1@green.com'
+WHERE  userid   = 'sky1';
 
 DELETE 
 FROM  tuser
-WHERE userid = ?;
+WHERE userid = 'sea';
