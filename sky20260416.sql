@@ -30,6 +30,9 @@ SET    username = '스카이1',
        email    = 'sky1@green.com'
 WHERE  userid   = 'sky1';
 
-DELETE 
+DELETE
 FROM  tuser
 WHERE userid = 'sea';
+
+
+
