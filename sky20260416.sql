@@ -10,12 +10,12 @@ CREATE TABLE TUSER (
 );
 
 DROP TABLE TUSER;
-
 INSERT INTO TUSER VALUES ('sky1', '스카이1', 'sky@green.com');
 INSERT INTO TUSER VALUES ('sky2', '스카이2', 'sky2@green.com');
 INSERT INTO TUSER VALUES ('sky3', '스카이3', 'sky3@green.com');
 INSERT INTO TUSER VALUES ('sky4', '스카이4', 'sky4@green.com');
 INSERT INTO TUSER VALUES ('sky5', '스카이5', 'sky5@green.com');
+
 
 COMMIT;
 ROLLback;
