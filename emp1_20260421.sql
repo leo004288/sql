@@ -20,9 +20,11 @@ SELECT *
 FROM   mem;
 
 UPDATE mem
- SET   phone_number = '010-2345-6789'
+ SET   phone_number = '010-1234-5678'
  WHERE userid = 'ive2';
  
 DELETE  
  FROM  mem
  WHERE userid = 'ive2';
+ 
+DROP TABLE mem;
