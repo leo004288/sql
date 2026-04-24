@@ -1,5 +1,5 @@
---Microsoft Windows [Version 10.0.19045.6218]
---(c) Microsoft Corporation. All rights reserved.
+Microsoft Windows [Version 10.0.19045.6218]
+(c) Microsoft Corporation. All rights reserved.
 
 C:\Users\GGG>sqlplus /nolog
 
