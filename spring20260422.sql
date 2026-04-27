@@ -51,3 +51,46 @@ INSERT INTO menus VALUES ('MENU03', 'ORACLE', 3);
 
 COMMIT;
 
+SELECT   *
+FROM     menus
+ORDER BY menu_seq;
+
+DELETE 
+FROM   menus
+WHERE  menu_id = 'MENU04';
+
+--------------------------------------------------------------------------------
+INSERT INTO menus (
+    MENU_ID,
+    MENU_NAME,
+    MENU_SEQ
+) VALUES (
+    (SELECT 'MENU' || 
+            TRIM( TO_CHAR( NVL( MAX( SUBSTR(menu_id,5,2) ), 0 ) + 1, '00') )
+     FROM MENUS),
+    :V0,
+    (SELECT NVL( MAX(MENU_SEQ), 0) + 1 
+     FROM MENUS)
+);
+
+
+SELECT 'MENU' || 
+        TRIM( TO_CHAR( NVL( MAX( SUBSTR(menu_id,5,2) ), 0 ) + 1, '00') )
+FROM MENUS;
+
+--------------------------------------------------------------------------------
+CREATE TABLE TUSER (
+    USERID   VARCHAR2(12)  PRIMARY KEY,
+    PASSWD   VARCHAR2(12)  NOT NULL,
+    USERNAME VARCHAR2(100) NOT NULL,
+    EMAIL    VARCHAR2(320),
+    UPOINT   NUMBER(9)     DEFAULT 0,
+    REGDATE  DATE          DEFAULT SYSDATE
+);
+
+INSERT INTO table VALUES (");
+
+SELECT *
+FROM   tuser;
+
+

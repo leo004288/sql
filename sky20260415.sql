@@ -133,15 +133,15 @@ FOR EACH ROW
 --      SET   내계좌 = 내계좌 + 100
 
 -- 1번 종료후 2번이 실행되지 않으면 문제
-BEGIN TRAN
-    UPDATE MTABLE
-      SET   내계좌 = 내계좌 - 100
-    UPDATE MTABLE
-      SET   내계좌 = 내계좌 + 100
-COMMIT;
-EXCEPTION
- ROLLBACK;
-END;
+--BEGIN TRAN
+--    UPDATE MTABLE
+--      SET   내계좌 = 내계좌 - 100
+--    UPDATE MTABLE
+--      SET   내계좌 = 내계좌 + 100
+--COMMIT;
+--EXCEPTION
+-- ROLLBACK;
+--END;
 
 -- 1, 2 번 다 한개의 단위로 묶어서 처리
 -- 문제 발생시 처음으로 돌아감
