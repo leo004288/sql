@@ -88,9 +88,11 @@ CREATE TABLE TUSER (
     REGDATE  DATE          DEFAULT SYSDATE
 );
 
-INSERT INTO table VALUES (");
+
 
 SELECT *
 FROM   tuser;
+
+commit;
 
 
