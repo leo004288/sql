@@ -88,9 +88,17 @@ CREATE TABLE TUSER (
     REGDATE  DATE          DEFAULT SYSDATE
 );
 
-INSERT INTO table VALUES (");
-
 SELECT *
 FROM   tuser;
+
+SELECT userid,
+       passwd,
+       username,
+       email,
+       upoint,
+       TO_CHAR(REGDATE, 'YYYY-MM-DD')
+FROM   tuser
+ORDER BY regdate;
+
 
 
