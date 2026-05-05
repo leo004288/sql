@@ -9,6 +9,9 @@ CREATE TABLE BOARD (
 );
 
 INSERT INTO board ( idx, menu_id, title, content, writer)
+VALUES ((SELECT NVL(MAX(IDX), 0)+1 FROM BOARD), 'MENU01', 'java Hello', '자바게시판에 오신것을 환영합니다', 'java');
+
+INSERT INTO board ( idx, menu_id, title, content, writer)
 VALUES ((SELECT NVL(MAX(IDX), 0)+1 FROM BOARD), 'MENU02', 'spring Hello', '스프링게시판에 오신것을 환영합니다', 'spring');
 
 COMMIT;
