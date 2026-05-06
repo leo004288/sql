@@ -25,3 +25,15 @@ SELECT idx,
 FROM   board
 WHERE  menu_id = 'MENU01'
 ORDER BY idx DESC;
+
+SELECT
+    IDX,
+    MENU_ID,
+    TITLE,
+    CONTENT,
+    WRITER,
+    REGDATE,
+    HIT
+FROM
+    BOARD
+WHERE IDX = 1;
