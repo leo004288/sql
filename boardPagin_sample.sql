@@ -55,6 +55,11 @@ SELECT  IDX,
   WHERE IDX = 299;
   
 UPDATE BOARD
-SET    WRITER = 'aaa'
+SET    WRITER  = 'aaa'
 WHERE  MENU_ID = 'MENU01'
   AND  WRITER IN ('user194', 'user196', 'user197', 'user199');
+  
+UPDATE board
+SET    writer  = :v0
+WHERE  idx     = :v1;
+    
