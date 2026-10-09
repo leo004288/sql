@@ -26,7 +26,7 @@ SELECT employee_id, first_name, last_name, phone_number
  WHERE phone_number LIKE '%010%'
  ORDER BY employee_id ASC;
  
- -- 50번 부서의 직원을 출력
+ -- 50번 부서의 직원 출력
 SELECT    employee_id                    "사 번",  -- 사번 : alias, 별칭
           first_name || '' || last_name   이름,
           department_id                   부서
