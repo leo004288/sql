@@ -4,7 +4,7 @@ DESC EMPLOYEES;
 
 SELECT * FROM employees;
 
--- 직원번호가 100인 사람을 출력
+-- 직원번호가 100인 사람 출력
 SELECT *
  FROM  employees
  WHERE employee_id = 100;
